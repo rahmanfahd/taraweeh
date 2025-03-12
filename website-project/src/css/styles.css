@@ -1,0 +1,180 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&display=swap');
+
+body {
+    font-family: 'DM Serif Text', serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    background-image: url('https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); /* Add the path to your mosque image */
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.33); /* White overlay with 33% opacity */
+    z-index: -1;
+}
+
+.container {
+    width: 100%;
+    max-width: 550px; 
+    padding: 20px;
+    margin: 400px 20px 200px 20px; /* Added margin */
+    background-color: rgba(255, 255, 255, 0.95); /* Lower transparency */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-sizing: border-box;
+    z-index: 1; /* Ensure the container is above the overlay */
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin: 0; /* Ensure no extra margin */
+    padding: 10px 0; /* Add padding for better visibility */
+}
+
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.day {
+    padding: 10px;
+    background-color: #e7e7e7;
+    border-radius: 4px;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+    font-family: Arial, sans-serif; /* Standard font for numbers */
+}
+
+.day:hover {
+    background-color: #d4d4d4;
+}
+
+.day.today {
+    background-color: #fad95f;
+    font-weight: bold;
+}
+
+.today-text {
+    display: block;
+    font-size: 0.8em;
+    font-weight: 1000;
+    color: #ff9800;
+    margin-top: 5px;
+}
+
+.header {
+    font-weight: bold;
+    text-align: center;
+    background-color: #317bd6b4;
+    color: white;
+    padding: 10px 0;
+    border-radius: 4px;
+}
+
+.header:nth-child(1), /* Sunday */
+.header:nth-child(7)  /* Saturday */ {
+    background-color: rgba(204, 25, 79, 0.765);
+}
+
+.blank-div {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background-color: rgba(255, 255, 255, 0.95); /* Changed transparency to 95% */
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    transition: transform 0.3s ease-in-out;
+    z-index: 1000;
+    cursor: pointer;
+}
+
+.blank-div.visible {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.selectable-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.item {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.item select {
+    margin-left: 10px;
+    flex-grow: 1;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    font-family: Arial, sans-serif;
+    font-size: 1em;
+    color: #333;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.item select:focus {
+    border-color: #317bd6;
+}
+
+.today-details {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 100%;
+    max-width: 800px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 600px) {
+    .calendar {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .header {
+        padding: 5px 0;
+    }
+
+    .day {
+        padding: 5px;
+    }
+}

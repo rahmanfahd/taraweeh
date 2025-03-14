@@ -1,0 +1,19 @@
+flask:
+  debug: true
+  host: '127.0.0.1'
+  port: 5000
+
+database:
+  uri: 'sqlite:///calendar.db'
+  track_modifications: false
+
+cors:
+  origins: '*'
+  methods: ['GET', 'POST', 'OPTIONS']
+  allow_headers: ['Content-Type']
+
+calendar:
+  month: 'March'
+  year: 2025
+  days: 30
+  start_day: 6  # Saturday

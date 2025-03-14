@@ -1,12 +1,24 @@
+import yaml
 from flask import Flask, request, jsonify, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import os
 
+# Load configuration
+with open('config.yaml', 'r') as file:
+    config = yaml.safe_load(file)
+
 app = Flask(__name__)
-CORS(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///calendar.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+CORS(app, resources={
+    r"/*": {
+        "origins": config['cors']['origins'],
+        "methods": config['cors']['methods'],
+        "allow_headers": config['cors']['allow_headers']
+    }
+})
+
+app.config['SQLALCHEMY_DATABASE_URI'] = config['database']['uri']
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = config['database']['track_modifications']
 db = SQLAlchemy(app)
 
 class CalendarSelection(db.Model):
@@ -50,5 +62,8 @@ def save_selection():
     return jsonify({'message': 'Selection saved successfully'})
 
 if __name__ == '__main__':
-    app.run(debug=True)
-    
+    app.run(
+        debug=config['flask']['debug'],
+        host=config['flask']['host'],
+        port=config['flask']['port']
+    )

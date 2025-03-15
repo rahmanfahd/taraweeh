@@ -11,19 +11,26 @@ document.addEventListener('DOMContentLoaded', function() {
     // Retrieve selected values from the backend
     let selectedValues = {};
 
-    fetch('http://127.0.0.1:5000/get_selections')
+    // Get your computer's IP address (run 'ifconfig | grep "inet " | grep -v 127.0.0.1' in terminal)
+    const API_BASE_URL = 'http://192.168.1.140:5000';
+
+    fetch(`${API_BASE_URL}/get_selections`)
         .then(response => response.json())
         .then(data => {
             data.forEach(selection => {
                 selectedValues[`${selection.day}-${selection.item}`] = selection.value;
             });
-            // Fill the calendar after retrieving the data
+            fillCalendar();
+        })
+        .catch(error => {
+            console.error('Error fetching selections:', error);
+            // Still fill the calendar even if the fetch fails
             fillCalendar();
         });
 
     // Save selected values to the backend
     function saveSelectedValues(day, item, value) {
-        fetch('http://127.0.0.1:5000/save_selection', {
+        fetch(`${API_BASE_URL}/save_selection`, {  // Changed from http://127.0.0.1:5000
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -33,6 +40,9 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             console.log(data.message);
+        })
+        .catch(error => {  // Added error handling
+            console.error('Error saving selection:', error);
         });
     }
 
@@ -46,9 +56,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to create the selectable list
     function createSelectableList(day, isToday = false) {
         const container = document.createElement('div');
-        const title = isToday ? `Today: Taraweeh ${day}` : `Taraweeh ${day}`;
+        const title = isToday ? `Today: T${day}` : `T${day}`; // Shortened "Taraweeh" to "T"
         container.classList.add('selectable-list');
-        container.innerHTML = `<h2>🌙 ${title}</h2>`;
+        container.innerHTML = `<h2 class="mobile-title">🌙 ${title}</h2>`;
         for (let j = 1; j <= 10; j++) {
             const itemDiv = document.createElement('div');
             itemDiv.classList.add('item');
@@ -144,7 +154,43 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 20); // Slight delay before attaching the event listener
             });
 
+            dayCell.addEventListener('touchend', function(e) {
+                e.preventDefault();  // Prevent double-firing on mobile
+                const blankDiv = document.createElement('div');
+                blankDiv.classList.add('blank-div');
+                blankDiv.appendChild(createSelectableList(day, day === currentDay && currentMonth === 3 && currentYear === 2025));
+                document.body.appendChild(blankDiv);
+
+                // Add animation
+                setTimeout(() => {
+                    blankDiv.classList.add('visible');
+                }, 10);
+
+                // Prevent the blank div from closing when clicked
+                blankDiv.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                });
+
+                // Close the blank div when clicked outside
+                setTimeout(() => {
+                    document.addEventListener('click', function(event) {
+                        if (!blankDiv.contains(event.target)) {
+                            blankDiv.classList.remove('visible');
+                            setTimeout(() => {
+                                document.body.removeChild(blankDiv);
+                            }, 300);
+                        }
+                    }, { once: true });
+                }, 20); // Slight delay before attaching the event listener
+            });
+
             calendar.appendChild(dayCell);
         }
+    }
+
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+        // Adjust any mobile-specific behaviors
+        console.log('Mobile device detected');
     }
 });

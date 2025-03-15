@@ -21,9 +21,9 @@ except Exception as e:
 app = Flask(__name__)
 CORS(app, resources={
     r"/*": {
-        "origins": config['cors']['origins'],
-        "methods": config['cors']['methods'],
-        "allow_headers": config['cors']['allow_headers']
+        "origins": ["*"],  # In production, specify actual allowed origins
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type"]
     }
 })
 

@@ -10,7 +10,7 @@ body {
     align-items: center;
     flex-direction: column;
     height: 100vh;
-    background-image: url('https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); /* Add the path to your mosque image */
+    background-image: url('https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); /* Mosque image */
     background-size: cover;
     background-position: center;
     position: relative;
@@ -29,7 +29,7 @@ body::before {
 
 .container {
     width: 100%;
-    max-width: 550px; 
+    max-width: 650px; 
     padding: 20px;
     margin: 400px 20px 200px 20px; /* Added margin */
     background-color: rgba(255, 255, 255, 0.95); /* Lower transparency */
@@ -89,6 +89,7 @@ h1 {
     border-radius: 4px;
 }
 
+/* Adjust header color for Sunday and Saturday */
 .header:nth-child(1), /* Sunday */
 .header:nth-child(7)  /* Saturday */ {
     background-color: rgba(204, 25, 79, 0.765);
@@ -99,7 +100,7 @@ h1 {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(0);
-    background-color: rgba(255, 255, 255, 0.95); /* Changed transparency to 95% */
+    background-color: rgba(255, 255, 255, 0.95); /* 95% transparency */
     padding: 20px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
@@ -164,17 +165,51 @@ h1 {
     align-items: center;
 }
 
+/* Add mobile-specific title styling */
+.mobile-title {
+    font-size: 1rem;
+    margin: 5px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (min-width: 768px) {
+    .mobile-title {
+        font-size: 1.2rem;
+    }
+}
+
 /* Media Queries for Responsive Design */
 @media (max-width: 600px) {
+    body {
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .container {
+        margin: 20px;  /* Reduce margins for mobile */
+        width: 90%;
+    }
+
     .calendar {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(7, 1fr); /* Keep 7 columns */
+        gap: 2px; /* Smaller gaps for mobile */
     }
 
-    .header {
-        padding: 5px 0;
+    .header { 
+        padding: 5px 2px;
+        font-size: 0.8em;
     }
 
-    .day {
-        padding: 5px;
+    .day { 
+        padding: 5px 2px;
+        font-size: 0.9em;
+    }
+
+    .blank-div {
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
     }
 }

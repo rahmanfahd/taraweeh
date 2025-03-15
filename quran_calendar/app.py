@@ -1,12 +1,22 @@
-import yaml
+import yaml # Ensure the import statement is correct
 from flask import Flask, request, jsonify, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import os
+import logging  # Add logging for debugging
+
+# Set up logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 # Load configuration
-with open('config.yaml', 'r') as file:
-    config = yaml.safe_load(file)
+try:
+    with open('config.yaml', 'r') as file:
+        config = yaml.safe_load(file)
+        logger.debug(f"Loaded configuration: {config}")
+except Exception as e:
+    logger.error(f"Error loading config.yaml: {str(e)}")
+    raise
 
 app = Flask(__name__)
 CORS(app, resources={
@@ -40,9 +50,14 @@ def serve_static(path):
 
 @app.route('/get_selections', methods=['GET'])
 def get_selections():
-    selections = CalendarSelection.query.all()
-    result = [{'day': s.day, 'item': s.item, 'value': s.value} for s in selections]
-    return jsonify(result)
+    try:
+        selections = CalendarSelection.query.all()
+        result = [{'day': s.day, 'item': s.item, 'value': s.value} for s in selections]
+        logger.debug(f"Fetched selections: {result}")
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"Error fetching selections: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/save_selection', methods=['POST'])
 def save_selection():
@@ -60,6 +75,15 @@ def save_selection():
     
     db.session.commit()
     return jsonify({'message': 'Selection saved successfully'})
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return jsonify({'error': 'Not found'}), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()
+    return jsonify({'error': 'Internal server error'}), 500
 
 if __name__ == '__main__':
     app.run(
